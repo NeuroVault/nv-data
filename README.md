@@ -51,3 +51,9 @@ cd november_2022
 
 sqlite3 neurovault.sqlite3
 ```
+
+## Creating the Backup on Prodution
+
+```
+export PGUSER=<user>; export PGPASSWORD=<password>; export PGHOST=<psql host>; ./create_export.sh
+```

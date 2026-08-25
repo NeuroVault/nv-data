@@ -51,3 +51,26 @@ cd november_2022
 
 sqlite3 neurovault.sqlite3
 ```
+
+## Gotchas when loading these CSVs
+
+Two properties of the data that will silently distort an analysis:
+
+* **The literal string `"None"` is a real primary key.** It belongs to the
+  `statmaps_cognitiveatlastask` row named "None / Other". Every
+  `cognitive_paradigm_cogatlas_id` in the dump joins to that table, with no
+  orphans, so `"None"` records a genuine user selection rather than a missing
+  value. Pandas' default `na_values` converts it to `NaN`, merging *"the user
+  chose None/Other"* with *"the user answered nothing"* — in `february_2024`
+  that is 301,879 rows versus 75,452. Read with `keep_default_na=False` and test
+  for blank strings explicitly.
+
+* **Owner `5761` is the Neuroscout mass-upload account**, a bulk push from a
+  separate platform: 3,889 collections and 289,248 statistic maps in
+  `february_2024`, or 51.7% of all maps. Most analyses of user-contributed
+  content should exclude it.
+
+Also note that `statmaps_collection.description` contains newlines, so line
+counts do not equal row counts — use a real CSV parser.
+
+Analyses built on these dumps live in the companion `nv-audit` repository.
